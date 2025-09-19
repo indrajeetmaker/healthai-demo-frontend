@@ -3,18 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthAI Connect</title>
+  <title>HealthAI Connect 🚀</title>
 </head>
 <body>
   <h1>Welcome to HealthAI Connect 🚀</h1>
-  <p>This is your healthcare platform.</p>
 
-  <nav>
-    <ul>
-      <li><a href="#">Patients</a></li>
-      <li><a href="#">Doctors</a></li>
-      <li><a href="#">Appointments</a></li>
-    </ul>
-  </nav>
+  <h2>Patients</h2>
+  <ul id="patients-list"></ul>
+
+  <h2>Doctors</h2>
+  <ul id="doctors-list"></ul>
+
+  <h2>Appointments</h2>
+  <ul id="appointments-list"></ul>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabaseUrl = "https://YOUR_PROJECT.supabase.co"   // yaha apna Supabase Project URL daalo
+    const supabaseKey = "YOUR_ANON_KEY"                     // yaha apna Supabase anon key daalo
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    async function loadData() {
+      // Patients
+      let { data: patients, error: pErr } = await supabase.from('patients').select('*')
+      if (!pErr) {
+        const list = document.getElementById("patients-list")
+        patients.forEach(p => {
+          let li = document.createElement("li")
+          li.textContent = `${p.name} (${p.age}, ${p.gender})`
+          list.appendChild(li)
+        })
+      }
+
+      // Doctors
+      let { data: doctors, error: dErr } = await supabase.from('doctors').select('*')
+      if (!dErr) {
+        const list = document.getElementById("doctors-list")
+        doctors.forEach(d => {
+          let li = document.createElement("li")
+          li.textContent = `${d.name} - ${d.specialization}`
+          list.appendChild(li)
+        })
+      }
+
+      // Appointments
+      let { data: appointments, error: aErr } = await supabase.from('appointments').select('*')
+      if (!aErr) {
+        const list = document.getElementById("appointments-list")
+        appointments.forEach(a => {
+          let li = document.createElement("li")
+          li.textContent = `Appointment on ${a.appointment_date} - Status: ${a.status}`
+          list.appendChild(li)
+        })
+      }
+    }
+
+    loadData()
+  </script>
 </body>
 </html>
